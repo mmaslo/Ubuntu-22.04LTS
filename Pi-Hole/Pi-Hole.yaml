@@ -1,0 +1,52 @@
+Pi-Hole
+Prerequisites 
+Ubuntu 22.04 installed on your system. 
+For a virtual machine: 50GB Storage, 2GB Ram, 1 vCPU
+
+Installing Pi-Hole
+
+Step 1: Update System Packages 
+sudo apt update && sudo apt upgrade -y
+
+Step 2: Install Dependencies 
+sudo apt install curl git -y
+
+Step 3: Download Pi-Hole Installer 
+curl -sSL https://install.pi-hole.net | bash
+
+Initial Configuration OS-Layer
+
+Step 1: configure Automatic Pi-Hole Updates 
+sudo vi /etc/systemd/system/pihole-update.service
+
+A. Add the following content to the file:
+
+[Unit] 
+Description=Pi-Hole Update Service
+
+[Service] 
+Type=oneshot 
+ExecStart=/usr/local/bin/pihole -up
+
+[Timer] 
+OnCalendar=daily 
+Persistent=true
+
+[Install] 
+WantedBy=multi-user.target
+
+B. reload systemd 
+sudo systemctl daemon-reload
+
+C. Start the Service 
+sudo systemctl start pihole-update.service
+
+D. Set service to run at boot 
+sudo systemctl enable pihole-update.service
+
+Step 2: Change Admin password 
+pihole -a -p
+
+Initial Configuration PI-Hole
+
+Step 1: Accessing Pi-Hole #http:///admin
